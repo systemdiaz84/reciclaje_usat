@@ -385,10 +385,26 @@ return [
             'url' => 'admin/settings',
             'icon' => 'fas fa-route',
         ],
-        [
+        /*[
             'text' => 'Programación',
             'url' => 'admin/settings',
             'icon' => 'far fa-calendar-alt',
+        ],*/
+        [
+            'text' => 'Programación',
+            'icon' => 'fas fa-stream',
+            'submenu' => [
+                [
+                    'text' => 'Horarios',
+                    'route' => 'admin.brands.index',
+                    'icon' => 'fas fa-clock',
+                ],
+                [
+                    'text' => 'Programación de Rutas',
+                    'route' => 'admin.models.index',
+                    'icon' => 'fas fa-calendar-alt',
+                ],
+            ]
         ],
         /*[
             'text' => 'change_password',
