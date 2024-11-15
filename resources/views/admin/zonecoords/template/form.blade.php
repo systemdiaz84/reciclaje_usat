@@ -20,7 +20,7 @@
         ]) !!}
     </div>
 </div>
-<div id="map" class="card" style="width: 100%; height:400px;"></div>
+<div id="map" class="card" style="width: 100%; height:500px;"></div>
 <script>
     var latInput = document.getElementById('latitude');
     var lonInput = document.getElementById('longitude');

@@ -373,7 +373,7 @@ return [
         ['header' => 'GESTIÓN DE RUTAS'],
         [
             'text' => 'Sectores',
-            'url' => 'admin/settings',
+            'route' => 'admin.sectors.index',
             'icon' => 'fas fa-layer-group',
         ],
         [

@@ -2,63 +2,61 @@
 
 @section('title', 'ReciclaUSAT')
 
+{{-- @section('content_header')
+  <h1>Marcas</h1>
+@stop --}}
+
 @section('content')
     <div class="p-2"></div>
     <div class="card">
         <div class="card-header">
-            <button class="btn btn-success float-right" id="btnNuevo" data-id={{ $zone->id }}><i class="fas fa-plus"></i>
-                Agregar</button>
-
-
-            <h3>Perímetro de la Zona</h3>
+            <button class="btn btn-success float-right" id="btnNuevo"><i class="fas fa-plus"></i> Nuevo</button>
+            <h3>Sectores</h3>
         </div>
-        <div class="card-body">
-            <div class="row">
-                <div class="col-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <label for="">Zona:</label>
-                            <p>{{ $zone->name }}</p>
-                            <label for="">Sector:</label>
-                            <p>{{ $zone->sector }}</p>
-                            <label for="">Área:</label>
-                            <p>{{ $zone->area }} metros</p>
-                            <label for="">Descripción:</label>
-                            <p>{{ $zone->description }}</p>
-                        </div>
-
-                    </div>
-                </div>
-                <div class="col-8">
-                    <div class="card">
-                        <div class="card-body">
-                            <table id="datatable" class="table table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>LATITUD</th>
-                                        <th>LONGITUD</th>
-                                        <th></th>
-                                    </tr>
-
-                                </thead>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-        <div class="card-footer">
-            <a href="{{ route('admin.zones.index') }}" class="btn btn-danger float-right"><i class="fas fa-chevron-left"></i> Retornar</a>
+        <div class="card-body table-responsive">
+            <table class="table table-striped" id="datatable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>NOMBRE</th>
+                        <th>AREA</th>
+                        <th>DESCRIPCIÓN</th>
+                        <th>MAPA</th>
+                        <th width="10"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
         </div>
     </div>
+
+
     <!-- Modal -->
     <div class="modal fade" id="formModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Formulario de sectores</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    ...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+    <div class="modal fade" id="formModalMap" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
         aria-hidden="true">
         <div class="modal-dialog modal-xl" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Agregar Coordenadas</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Formulario de la zona</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -71,30 +69,29 @@
     </div>
 @stop
 
+@section('css')
+    {{-- Add here extra stylesheets --}}
+    {{-- <link rel="stylesheet" href="/css/admin_custom.css"> --}}
+@stop
 @section('js')
     <script>
-        /* $("#btnNuevo").click(function() {
-                                                        var id = $(this).attr('data-id');
-                                                        $.ajax({
-                                                            url: "{{ route('admin.zonecoords.edit', '_id') }}".replace('_id', id),
-                                                            type: "GET",
-                                                            success: function(response) {
-                                                                $("#formModal .modal-body").html(response);
-                                                                $("#formModal").modal("show");
-                                                            }
-                                                        })
-                                                    })*/
-
         $(document).ready(function() {
             var table = $('#datatable').DataTable({
-                "ajax": "{{ route('admin.zones.show', $zone->id) }}", // La ruta que llama al controlador vía AJAX
+                "ajax": "{{ route('admin.sectors.index') }}", // La ruta que llama al controlador vía AJAX
                 "columns": [{
-                        "data": "latitude",
-                        "orderable": false,
-                        "searchable": false,
+                        "data": "id",
                     },
                     {
-                        "data": "longitude",
+                        "data": "name",
+                    },
+                    {
+                        "data": "area",
+                    },
+                    {
+                        "data": "description",
+                    },
+                    {
+                        "data": "coords",
                         "orderable": false,
                         "searchable": false,
                     },
@@ -121,13 +118,14 @@
             });
         });
 
+
         $('#btnNuevo').click(function() {
-            var id = $(this).attr('data-id');
+
             $.ajax({
-                url: "{{ route('admin.zonecoords.edit', '_id') }}".replace('_id', id),
+                url: "{{ route('admin.sectors.create') }}",
                 type: "GET",
                 success: function(response) {
-                    $("#formModal #exampleModalLabel").html("Agregar coordenada");
+                    $("#formModal #exampleModalLabel").html("Nuevo Sector");
                     $("#formModal .modal-body").html(response);
                     $("#formModal").modal("show");
 
@@ -161,6 +159,48 @@
             });
         });
 
+        $(document).on('click', '.btnEditar', function() {
+            var id = $(this).attr("id");
+
+            $.ajax({
+                url: "{{ route('admin.sectors.edit', 'id') }}".replace('id', id),
+                type: "GET",
+                success: function(response) {
+                    $("#formModal #exampleModalLabel").html("Modificar Sector");
+                    $("#formModal .modal-body").html(response);
+                    $("#formModal").modal("show");
+
+                    $("#formModal form").on("submit", function(e) {
+                        e.preventDefault();
+
+                        var form = $(this);
+                        var formData = new FormData(this);
+
+                        $.ajax({
+                            url: form.attr('action'),
+                            type: form.attr('method'),
+                            data: formData,
+                            processData: false,
+                            contentType: false,
+                            success: function(response) {
+                                $("#formModal").modal("hide");
+                                refreshTable();
+                                Swal.fire('Proceso existoso', response.message,
+                                    'success');
+                            },
+                            error: function(xhr) {
+                                var response = xhr.responseJSON;
+                                Swal.fire('Error', response.message, 'error');
+                            }
+                        })
+
+                    })
+                }
+            });
+
+
+        })
+
         $(document).on('submit', '.frmEliminar', function(e) {
             e.preventDefault();
             var form = $(this);
@@ -190,6 +230,23 @@
                 }
             });
         });
+    
+
+        $(document).on('click', '.btnMap', function() {
+            var id = $(this).attr("id");
+
+            $.ajax({
+                url: "{{ route('admin.sectors.show', 'id') }}".replace('id', id),
+                type: "GET",
+                success: function(response) {
+                    $("#formModalMap #exampleModalLabel").html("Mapa del sector");
+                    $("#formModalMap .modal-body").html(response);
+                    $("#formModalMap").modal("show");                  
+                }
+            });
+
+
+        })
 
         function refreshTable() {
             var table = $('#datatable').DataTable();
@@ -197,10 +254,3 @@
         }
     </script>
 @endsection
-
-
-
-@section('css')
-    {{-- Add here extra stylesheets --}}
-    {{-- <link rel="stylesheet" href="/css/admin_custom.css"> --}}
-@stop

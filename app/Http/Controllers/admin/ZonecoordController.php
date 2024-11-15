@@ -42,7 +42,12 @@ class ZonecoordController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $vertice = ZoneCoord::select(
+            'latitude as lat',
+            'longitude as lng'
+        )->where('zone_id', $id)->get();
+
+        return view('admin.zonecoords.show', compact('vertice'));
     }
 
     /**
@@ -60,7 +65,7 @@ class ZonecoordController extends Controller
             'longitude as lng'
         )->where('zone_id', $id)->get();
 
-        return view('admin.zonecoords.create', compact('lastCoords','vertice'))->with('zone_id', $id);
+        return view('admin.zonecoords.create', compact('lastCoords', 'vertice'))->with('zone_id', $id);
     }
 
     /**
